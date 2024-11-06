@@ -1,0 +1,56 @@
+import java.util.*;
+public class practice {
+    static int pageframes=0;
+
+    static int lru(int s[]){
+        int pagefaults=0;
+        int currpage;
+        ArrayList<Integer> pages = new ArrayList<Integer>(pageframes);
+        HashMap<Integer, Integer> indexes = new HashMap<>();
+
+        for(int i =0; i<s.length; i++){
+            currpage = s[i];
+            if(pages.size()<pageframes){
+                if (!pages.contains(currpage)){
+                    pages.add(currpage);
+                    pagefaults++;
+                    display(pages,pagefaults);
+                }
+                indexes.put(currpage,i);
+            }
+            else{
+                if(!pages.contains(currpage)){
+                    int temp, pageToBeReplaced=0,lru=Integer.MAX_VALUE;
+                    for(int j=0;j<pages.size();j++){
+                        temp=pages.get(j);
+                        if(indexes.get(temp)<lru){
+                            lru = indexes.get(temp);
+                            pageToBeReplaced=j;
+                        }
+                    }
+                    pagefaults++;
+                    pages.set(pageToBeReplaced, currpage);
+                    indexes.remove(pages.get(pageToBeReplaced));
+                    display(pages,pagefaults);
+                }
+                indexes.put(currpage,i);
+            }
+        }
+        return pagefaults;
+    }
+    static void display(ArrayList<Integer>pages,int pagefaults){
+        System.out.println("At page fault-"+ pagefaults+"\nPages-");
+        for(int i=0;i<pages.size();i++){
+            System.out.print(pages.get(i)+" ");
+        }
+        System.out.println();
+    }
+    public static void main(String[] args){
+        int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1};
+        pageframes = 3;
+            int pageFaults;
+            System.out.println("--- Implementing Least Recently Used Page Replacement Algorithm -----");
+            pageFaults = lru(pages);
+            System.out.println("Number of page faults = " + pageFaults);
+    }
+}
